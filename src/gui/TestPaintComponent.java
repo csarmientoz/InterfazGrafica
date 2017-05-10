@@ -8,6 +8,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -32,17 +34,20 @@ public class TestPaintComponent extends JFrame {
 class NewPanel extends JPanel implements ActionListener, MouseListener {
 
     int x;
+    int y;
     private Timer timer;
     private int secuencia = 0;
 
     public NewPanel() {
         this.addMouseListener(this);
-        timer = new Timer(1, this);
+        addKeyListener(new TAdapter());
+        setFocusable(true);
+        timer = new Timer(70, this);
         timer.start();
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x + 20, 360, 95, 70);
+        return new Rectangle(x + 1, y+360, 32, 32);
     }
 
     public void checkCollisions() {
@@ -68,9 +73,8 @@ class NewPanel extends JPanel implements ActionListener, MouseListener {
 
 //        Image gato = loadImage("cats.gif");
 //        g.drawImage(gato, x, 360, x + 142, 440, (this.secuencia * 132), 0, (this.secuencia * 132) + 132, 80, this);
-        
         Image azulito = loadImage("free_radical_game_sprites.png");
-        g.drawImage(azulito, x, 360, x + 32, 392, 192+(this.secuencia * 32)+32, 192, 192+(this.secuencia*32), 192+32, this);
+        g.drawImage(azulito, x, y+360, x + 32, y+392, 192 + (this.secuencia * 32) + 32, 192 - 32, 192 + (this.secuencia * 32), 192, this);
 
 //        g.setColor(Color.GREEN);
 //        g.fillRect(x + 100, 390, 200, 100);
@@ -94,7 +98,7 @@ class NewPanel extends JPanel implements ActionListener, MouseListener {
         g.fillRect(600, 380, 100, 70);
         g.setColor(Color.BLACK);
 //        g.drawString("OB 3", 815, 430);
-        g.drawRect(x + 20, 360, 95, 70);
+        g.drawRect(x + 1, y+360, 32, 32);
 
     }
 
@@ -107,10 +111,38 @@ class NewPanel extends JPanel implements ActionListener, MouseListener {
         } else {
             this.secuencia++;
         }
-       
+
         repaint();
 
         checkCollisions();
+    }
+
+    private class TAdapter extends KeyAdapter {
+        //@Override
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            System.out.println("presionó el botón");
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_LEFT) {
+                x = x - 5;
+            }
+            if (key == KeyEvent.VK_RIGHT) {
+                x = x + 5;
+            }
+            if(key == KeyEvent.VK_UP){
+            y=y-5;
+            }
+            if(key == KeyEvent.VK_DOWN){
+            y=y+5;
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            System.out.println("Soltó el botón");
+        }
+
     }
 
     @Override
